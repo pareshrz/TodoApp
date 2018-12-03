@@ -16,7 +16,7 @@ MongoClient.connect(url, {useNewUrlParser:true}, (err, client)=>{
     // });
 
     collection.findOneAndDelete({completed:false}).then((result)=>{
-        console.log(result.value.text);
+        console.log(result.value);
     });
     
 });
