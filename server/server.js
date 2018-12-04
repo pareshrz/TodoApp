@@ -1,47 +1,35 @@
 const {mongoose} = require("./db/mongoose");
 const {Todo} = require('./models/todo');
 const {User} = require('./models/user');
+
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(bodyParser.json());
+
+
+app.get("/", (req, res)=> {
+    res.send({greeting:"Hello World!"});
+});
 
 
 
+// Post
+app.post("/todos", (req, res)=>{
+    let todo = new Todo({
+        text : req.body.text,
+    });
+    todo.save().then((doc)=>{
+        res.send(doc);
+    }, (e)=>{
+        res.status(400);
+       res.send(e);
+    });
+});
 
-
-
-// let newTodo = new Todo({
-//     text : "  Create youtube channel    "
-// });
-
-// newTodo.save().then((doc)=>{
-//     console.log("Saved Todo:", doc);
-// }, (e)=>{
-//     console.log(JSON.stringify(e, undefined, 2));
-// });
-
-// Todo.find((e, res)=>{
-//     if (e) {
-//         return console.log(e);
-//     }
-//     console.log(JSON.stringify(res, undefined, 2));
-// });
-
-
-
-// let user = new User({
-//     email : "   pareshb@live.in   "
-// });
-
-// user.save().then((user)=>{
-//     console.log("Saved user: ", user);
-// }, (e)=>{
-//     console.log(e);
-// })
-
-User.find((e, res)=>{
-    if (e) {
-        return console.log(e);
-    }
-    console.log(res);
+app.listen(port, ()=> {
+    console.log("listening on port:", port);
 });
