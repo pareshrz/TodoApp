@@ -25,8 +25,20 @@ app.post("/todos", (req, res)=>{
     todo.save().then((doc)=>{
         res.send(doc);
     }, (e)=>{
-        res.status(400);
-       res.send(e);
+        res.status(400).send(e);
+    });
+});
+
+
+// Get
+app.get("/todos", (req, res) => {
+    Todo.find().then((todos)=>{
+        res.send({
+            todos,
+            code : "asdf"
+        });
+    }, (e) => {
+        res.status(400).send(e);
     });
 });
 
