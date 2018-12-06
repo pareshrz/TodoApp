@@ -9,21 +9,3 @@ if(!ObjectID.isValid(id)) {
     console.log("Id not valid");
 }
 
-
-// Todo.find({
-//     _id : id
-// }).then((doc)=>{
-//   console.log(doc);  
-// }, (e)=>{
-//     console.log(e);
-// });
-
-
-// Todo.findOne({
-//     completed : false
-// }).then((todo)=>{
-//     console.log(todo);
-// });
-
-
-Todo.deleteOne({_id : id})
