@@ -2,11 +2,11 @@
 const {MongoClient, ObjectID} = require('mongodb');
 
 // Connection url
-const url = 'mongodb://localhost:27017';
+const url = 'mongodb+srv://Watson:KZsSECt4123@cluster0-d3zkk.mongodb.net/test?retryWrites=true';
 
 MongoClient.connect(url, { useNewUrlParser: true }, (err, client) => {
     if (err) {
-        return console.log("Unable to connect mongodb server");
+        return console.log("Unable to connect mongodb server", err);
     }
     console.log("Connected to mongodb server");
     const db = client.db('TodoApp');

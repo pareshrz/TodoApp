@@ -16,8 +16,12 @@
     "supertest": "^3.3.0"
   },
   "scripts": {
+    "start" : "node server/server",
     "test": "mocha server/**/*.test.js",
     "test-watch" : "nodemon --exec 'test'"
+  },
+  "engines": {
+    "node" : "8.11.4"
   },
   "author": "",
   "license": "ISC"
