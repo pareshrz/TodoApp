@@ -6,6 +6,7 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
+    "lodash": "^4.17.11",
     "mongodb": "^3.1.10",
     "mongoose": "^5.3.14"
   },
@@ -16,12 +17,12 @@
     "supertest": "^3.3.0"
   },
   "scripts": {
-    "start" : "node server/server",
+    "start": "node server/server",
     "test": "mocha server/**/*.test.js",
-    "test-watch" : "nodemon --exec 'test'"
+    "test-watch": "nodemon --exec 'test'"
   },
   "engines": {
-    "node" : "8.11.4"
+    "node": "8.11.4"
   },
   "author": "",
   "license": "ISC"

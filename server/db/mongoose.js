@@ -16,6 +16,7 @@ mongoose.connect(url, {useNewUrlParser:true}).then(()=>{
     console.log(e);
 });
 
+mongoose.set('useFindAndModify', false);
 
 module.exports = {
     mongoose
