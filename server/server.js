@@ -1,6 +1,7 @@
 const {mongoose} = require("./db/mongoose");
 const {Todo} = require('./models/todo');
-const {User} = require('./models/user');
+const User = require('./models/user');
+const bcrypt = require('bcrypt');
 
 const {ObjectID} = require('mongodb');
 const _ = require("lodash");
@@ -138,18 +139,60 @@ app.get('/users/:id', (req, res)=>{
     });
 });
 
+// DELETE /users:id
+
+app.delete("/users/:id", (req, res)=>{
+    let id = req.params.id;
+
+    if (!ObjectID.isValid(id)) {
+        return res.status(400).send();
+    }
+
+    User.findByIdAndDelete(id).then((user)=>{
+        if (!user) {
+            return res.status(404).send();
+        }
+        res.send(user);
+    }).catch(()=>{
+        res.status(400).send();
+    });
+
+});
+
+
 // POST /users
 
-app.post("/users", (req, res)=>{
-    let user = new User({
-        email : req.body.email
-    });
-    user.save().then((doc)=>{
-        res.send(doc);
-    }, (e)=>{
-        res.status(400).send(e);
+app.post('/users', (req, res)=>{
+    let body = _.pick(req.body, ['email', 'password']);
+    let user = new User(body);
+    user.save()
+    .then((user)=>{
+        let token_array = user.tokens.filter(token=>token.access == 'auth');
+        res.header('x-auth', token_array[0].token).send(user);
+    })
+    .catch((e)=>{
+        res.send(e);
     });
 });
+
+// UPDATE /user:id
+app.patch("/users:id", (req, res)=>{
+    let id = req.params.id;
+    if (!OBjectID.isValid(id)) {
+        return res.status(400).send();
+    }
+    let body = _.pick(req.body, ['email', 'password']);
+    User.findByIdAndUpdate(id, {$set:body}, {new:true}).then((user)=>{
+        if (!user) {
+            return res.status(404).send();
+        }
+        res.send(user);
+    }).catch(()=>{
+        res.status(400).send();
+    });
+});
+
+// GET /users/verify:id
 
 
 app.listen(port, ()=> {
