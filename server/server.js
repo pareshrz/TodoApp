@@ -1,6 +1,8 @@
 const {mongoose} = require("./db/mongoose");
 const {Todo} = require('./models/todo');
 const User = require('./models/user');
+const {authenticate} = require('./middleware/authenticate'); 
+
 const bcrypt = require('bcrypt');
 
 const {ObjectID} = require('mongodb');
@@ -17,6 +19,12 @@ app.use(bodyParser.json());
 
 app.get("/", (req, res)=> {
     res.send({greeting:"Hello World!"});
+});
+
+
+
+app.get("/users/me", authenticate, (req ,res)=>{
+    res.send(req.user);
 });
 
 
@@ -188,7 +196,7 @@ app.patch("/users:id", (req, res)=>{
         }
         res.send(user);
     }).catch(()=>{
-        res.status(400).send();
+        res.sendStatus(400).send();
     });
 });
 

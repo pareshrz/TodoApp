@@ -9,6 +9,8 @@ let data = {
 
 let token = jwt.sign(data, '123abc');
 
+console.log(token);
 
+let decoded = jwt.verify(token, "123abc");
 
-console.log(typeof token);
+console.log("Decoded", decoded);
