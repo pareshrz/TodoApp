@@ -35,7 +35,7 @@ app.post("/todos", (req, res)=>{
     }).then((todo)=>{
         res.send(todo);
     }, (e)=>{
-        res.status(401).send(e);
+        res.status(400).send(e);
     });
 });
 
@@ -88,6 +88,10 @@ app.get("/users", (req, res)=>{
     }).catch((e)=>res.sendStatus(401));
 });
 
+
+
 app.listen(3000, ()=>{
     console.log("Server running on port 3000");
 });
+
+module.exports = {app};
