@@ -1,10 +1,12 @@
+
+
+console.log(process.env.MONGODB_URI);
+
 const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 
-let url = "mongodb+srv://Watson:KZsSECt4123@cluster0-d3zkk.mongodb.net/TodoApp?retryWrites=true";
-
-mongoose.connect(url, {useNewUrlParser: true});
+mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true});
 
 mongoose.set('useFindAndModify', false);
 
