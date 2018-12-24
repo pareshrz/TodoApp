@@ -67,7 +67,7 @@ app.delete("/todos/:id", (req, res)=>{
         }
         res.send(todo);
     }, (e)=>{
-        res.sendStatus(401);
+        res.sendStatus(400);
     });
 });
 
@@ -75,8 +75,13 @@ app.delete("/todos/:id", (req, res)=>{
 app.patch("/todos/:id", (req, res)=>{
     var id = req.params.id;
     var body = _.pick(req.body, ['text', 'completed']);
-    if(typeof body.completed === 'boolean' && body.completed) {
-        body.completedAt = new Date().getTime();
+   
+    if(_.isBoolean(body.completed)) {
+        if(body.completed) {
+            body.completedAt = new Date().getTime();
+        } else {
+            body.completedAt = null;
+        }
     }
     Todo.findByIdAndUpdate(id, {$set : body}, {new : true}).then((todo)=>{
         if(!todo) return res.sendStatus(404);
