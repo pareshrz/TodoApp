@@ -42,14 +42,16 @@ app.post("/todos", (req, res)=>{
 // GET /todos/:id
 app.get("/todos/:id", (req, res)=>{
     var id = req.params.id;
-   
+    if (!ObjectID.isValid(id)) {
+        return res.status(400).send("Invalid id provided");
+    }
     Todo.findById(id).then((todo)=>{
         if(!todo) {
-            return res.sendStatus(404);
+            return res.status(404).send("Todo do not exists");
         }
         res.send(todo);
     }, (e)=>{
-        res.sendStatus(401);
+        res.status(400).send("Invalid request");
     })
 });
 
