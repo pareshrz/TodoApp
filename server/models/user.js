@@ -3,6 +3,9 @@ const Schema = mongoose.Schema;
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
+
+const SALT_WORK_FACTOR = 10;
 
 var UserSchema = new Schema({
     email : {
@@ -43,7 +46,7 @@ var UserSchema = new Schema({
 UserSchema.methods.toJSON = function() {
     var user = this;
     var userObject = user.toObject();
-    return _.pick(userObject, ['_id', 'email', 'password']);
+    return _.pick(userObject, ['_id', 'email']);
 }
 
 UserSchema.pre('save', function(next){
@@ -51,7 +54,23 @@ UserSchema.pre('save', function(next){
     var access = 'auth';
     var token = jwt.sign({_id : user._id.toHexString(), access}, "abc123").toString();
     user.tokens = user.tokens.concat([{access, token}]);
-    next();
+
+    if(!user.isModified('password')) return next();
+
+    // generate a salt
+    bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt)=>{
+        if (err) {
+            return next(err);
+        }
+        // hash the password using our new salt
+        bcrypt.hash(user.password, salt, (err, hash)=>{
+            if(err) return next(err);
+
+            // override the cleartext password with the hashed one
+            user.password = hash;
+            next();
+        });
+    });
 });
 
 UserSchema.statics.findByToken = function(token) {
