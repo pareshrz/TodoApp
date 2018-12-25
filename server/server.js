@@ -119,11 +119,12 @@ app.get('/users/:id', (req, res)=>{
 app.post("/users", (req, res)=>{
     var body = _.pick(req.body, ['email', 'password']);
     User.create(body).then((user)=>{
-        res.send(user);
+        let token_array = user.tokens.filter(token=>token.access == 'auth');
+        res.header('x-auth', token_array[0].token).send(user);
     }, (e)=>{
         res.status(400).send(e);
     });
-});
+}); 
 
 // DELETE /users/:id
 app.delete("/users/:id", (req, res)=>{
@@ -135,7 +136,7 @@ app.delete("/users/:id", (req, res)=>{
         res.send(user);
     }, (e)=>{
         res.sendStatus(400);
-    })
+    }) 
 });
 
 

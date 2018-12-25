@@ -1,3 +1,17 @@
+const jwt = require('jsonwebtoken');
+
+var data = {
+	id : 10
+}
+
+var token = jwt.sign(data, '123abc');
+
+console.log(token);
+
+var decoded = jwt.verify(token, '123ab');
+
+console.log("Decoded : ", decoded);
+
 // const SHA256 = require('crypto-js').SHA256;
 
 // var message = "I am user no. 3";
@@ -29,5 +43,7 @@
 // } else {
 // 	console.log("Data was changed don't trust!");
 // }
+
+
 
 
