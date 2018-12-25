@@ -22,6 +22,9 @@ const port = process.env.PORT || 3000;
 // Setup middlewares
 app.use(bodyParser.json());
 
+// Load middlewares
+const {authenticate} = require('./middleware/authenticate');
+
 // Todos route
 // GET /todos
 app.get("/todos", (req, res)=>{
@@ -93,6 +96,11 @@ app.patch("/todos/:id", (req, res)=>{
 
 
 // User routes
+
+
+app.get('/users/me', authenticate, (req, res)=>{
+    res.send(req.user);
+});
 // GET /users
 app.get("/users", (req, res)=>{
     User.find().then((users)=>{
