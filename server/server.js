@@ -100,6 +100,44 @@ app.get("/users", (req, res)=>{
     }).catch((e)=>res.sendStatus(401));
 });
 
+// GET /users/:id
+
+app.get('/users/:id', (req, res)=>{
+    var id = req.params.id;
+    if (!ObjectID.isValid(id)) {
+        return res.sendStatus(400);
+    }
+    User.findById(id).then((user)=>{
+        if(!user) return res.sendStatus(404);
+        res.send(user);
+    }, (e)=>{
+        res.sendStatus(400);
+    });
+});
+
+// POST /users
+app.post("/users", (req, res)=>{
+    var body = _.pick(req.body, ['email', 'password']);
+    User.create(body).then((user)=>{
+        res.send(user);
+    }, (e)=>{
+        res.status(400).send(e);
+    });
+});
+
+// DELETE /users/:id
+app.delete("/users/:id", (req, res)=>{
+    var id = req.params.id;
+    User.findByIdAndDelete(id).then((user)=>{
+        if(!user) {
+            res.sendStatus(404);
+        }
+        res.send(user);
+    }, (e)=>{
+        res.sendStatus(400);
+    })
+});
+
 
 
 app.listen(port, ()=>{

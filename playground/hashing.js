@@ -1,15 +1,33 @@
-const bcrypt = require('bcryptjs');
+// const SHA256 = require('crypto-js').SHA256;
 
-let password = "123abc";
+// var message = "I am user no. 3";
 
-bcrypt.genSalt(10, (err, salt)=>{
-	bcrypt.hash(password, salt, (err, hash)=>{
-		console.log(hash);
-	});
-});
+// var hashed = SHA256(message).toString();
 
-let hashed_password = "$2a$10$i4Ap2z0wcl6uKrRCEQGseOM25yjkeAKGa/q2vR/uhv3MXfW/CAQUy";
+// console.log(`Message : `, message);
+// console.log(`Hash: `, hashed);
 
-bcrypt.compare("123abc", hashed_password, (err, res)=>{
-	console.log(res);
-});
+// var data = {
+// 	id : 4
+// };
+
+// var token = {
+// 	data,
+// 	hash : SHA256(JSON.stringify(data) + 'somesecret').toString()
+// }
+
+
+
+// token.data.id = 5;
+// token.hash = SHA256(JSON.stringify(token.data)).toString();
+
+
+// var resultHash = SHA256(JSON.stringify(token.data)+ 'somesecret').toString();
+
+// if(resultHash === token.hash) {
+// 	console.log("Data was not changed");
+// } else {
+// 	console.log("Data was changed don't trust!");
+// }
+
+
