@@ -25,7 +25,7 @@ var UserSchema = new Schema({
     password : {
         required : true,
         minlength : 6,
-        maxlength: 20,
+        maxlength: 255,
         type : String,
         trim : true
     },
@@ -49,12 +49,19 @@ UserSchema.methods.toJSON = function() {
     return _.pick(userObject, ['_id', 'email']);
 }
 
-UserSchema.pre('save', function(next){
+UserSchema.methods.generateAuthToken = function() {
     var user = this;
     var access = 'auth';
     var token = jwt.sign({_id : user._id.toHexString(), access}, "abc123").toString();
     user.tokens = user.tokens.concat([{access, token}]);
+    return user.save().then(()=>{
+        return token;
+    });
+}
 
+UserSchema.pre('save', function(next){
+    var user = this;
+    
     if(!user.isModified('password')) return next();
 
     // generate a salt
@@ -88,6 +95,25 @@ UserSchema.statics.findByToken = function(token) {
         '_id' : decoded._id,
         'tokens.access' : 'auth',
         'tokens.token' : token 
+    });
+}
+
+UserSchema.statics.findByCredentials = function(email, password) {
+    var User = this;
+    if(!email || !password) {
+        return Promise.reject();
+    }
+  
+    return User.findOne({email}).then((user)=>{
+        if(!user) {
+            return Promise.reject();
+        }
+        return bcrypt.compare(password, user.password).then((res)=>{
+            if(!res) {
+                return Promise.reject();
+            }
+            return user;
+        });
     });
 }
 

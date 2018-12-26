@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 const _ = require('lodash');
 const bodyParser = require('body-parser');
+const bcrypt = require('bcryptjs');
 
 const {ObjectID} = require('mongodb');
 
@@ -97,6 +98,14 @@ app.patch("/todos/:id", (req, res)=>{
 
 // User routes
 
+// POST /users/login
+app.post('/users/login', (req, res)=>{
+   User.findByCredentials(req.body.email, req.body.password).then((user)=>{
+        return user.generateAuthToken().then((token)=>{
+            res.header('x-auth', token).send(user);
+        });
+   }).catch((e)=>res.sendStatus(401));
+});
 
 app.get('/users/me', authenticate, (req, res)=>{
     res.send(req.user);
@@ -125,13 +134,17 @@ app.get('/users/:id', (req, res)=>{
 
 // POST /users
 app.post("/users", (req, res)=>{
-    var body = _.pick(req.body, ['email', 'password']);
-    User.create(body).then((user)=>{
-        let token_array = user.tokens.filter(token=>token.access == 'auth');
-        res.header('x-auth', token_array[0].token).send(user);
-    }, (e)=>{
-        res.status(400).send(e);
-    });
+   var body = _.pick(req.body, ['email', 'password']);
+   var user = new User(body);
+
+   user.save().then(()=>{
+       return user.generateAuthToken();
+   }).then((token)=>{
+       res.header('x-auth', token).send(user);
+   }).catch((e)=>{
+       console.log(e);
+       res.status(400).send(e);
+   });
 }); 
 
 // DELETE /users/:id
